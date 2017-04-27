@@ -8,17 +8,17 @@
     "test": "gulp test",
     "prepublish": "gulp prepublish"
   },
-  "homepage": "https://github.com/vanita5/mastodon-api",
+  "homepage": "https://github.com/cormojs/mastodon-api",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vanita5/mastodon-api.git"
+    "url": "git+https://github.com/cormojs/mastodon-api.git"
   },
   "bugs": {
-    "url": "https://github.com/vanita5/mastodon-api/issues"
+    "url": "https://github.com/cormojs/mastodon-api/issues"
   },
   "author": {
-    "name": "vanita5",
-    "email": "mail@vanit.as"
+    "name": "cormojs",
+    "email": "cormorant2+github@gmail.com"
   },
   "license": "MIT",
   "keywords": [
