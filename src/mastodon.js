@@ -2,9 +2,10 @@ import assert from 'assert'
 import util from 'util'
 import { OAuth2 } from 'oauth'
 import Request from 'request'
+import EventSource from 'eventsource'
 
 import Helpers from './helpers'
-import StreamingAPIConnection from './streaming-api-connection'
+
 
 import {
     STATUS_CODES_TO_ABORT_ON,
@@ -285,7 +286,7 @@ class Mastodon {
         }
 
         if (typeof config.timeout_ms !== 'undefined'
-                && isNaN(Number(config.timeout_ms))) {
+            && isNaN(Number(config.timeout_ms))) {
             throw new TypeError(`config parameter 'timeout_ms' must be a Number, got ${config.timeout_ms}.`)
         }
 
@@ -297,9 +298,9 @@ class Mastodon {
     }
 
     static createOAuthApp(url = DEFAULT_OAUTH_APPS_ENDPOINT,
-                          clientName = 'mastodon-node',
-                          scopes = 'read write follow',
-                          redirectUri = 'urn:ietf:wg:oauth:2.0:oob') {
+        clientName = 'mastodon-node',
+        scopes = 'read write follow',
+        redirectUri = 'urn:ietf:wg:oauth:2.0:oob') {
         return new Promise((resolve, reject) => {
             Request.post({
                 url,
@@ -324,9 +325,9 @@ class Mastodon {
     }
 
     static getAuthorizationUrl(clientId, clientSecret,
-                               baseUrl = DEFAULT_REST_BASE,
-                               scope = 'read write follow',
-                               redirectUri = 'urn:ietf:wg:oauth:2.0:oob') {
+        baseUrl = DEFAULT_REST_BASE,
+        scope = 'read write follow',
+        redirectUri = 'urn:ietf:wg:oauth:2.0:oob') {
         return new Promise((resolve) => {
             const oauth = new OAuth2(clientId, clientSecret, baseUrl, null, '/oauth/token')
             const url = oauth.getAuthorizeUrl({
@@ -340,8 +341,8 @@ class Mastodon {
     }
 
     static getAccessToken(clientId, clientSecret, authorizationCode,
-                          baseUrl = DEFAULT_REST_BASE,
-                          redirectUri = 'urn:ietf:wg:oauth:2.0:oob') {
+        baseUrl = DEFAULT_REST_BASE,
+        redirectUri = 'urn:ietf:wg:oauth:2.0:oob') {
         return new Promise((resolve, reject) => {
             const oauth = new OAuth2(clientId, clientSecret, baseUrl, null, '/oauth/token')
             oauth.getOAuthAccessToken(authorizationCode, {
@@ -358,25 +359,14 @@ class Mastodon {
     }
 
     stream(path, params) {
-        const mastodonOptions = (params && params.mastodon_options) || {}
-
-        const streamingConnection = new StreamingAPIConnection()
+        let initDict
+        let url
         this._buildRequestOptions('GET', path, params, (err, requestOptions) => {
-            if (err) {
-                // surface this on the streamingConnection instance
-                // (where a user may register their error handler)
-                streamingConnection.emit('error', err)
-                return
-            }
-            // set the properties required to start the connection
-            streamingConnection.requestOptions = requestOptions
-            streamingConnection.mastodonOptions = mastodonOptions
-
-            process.nextTick(() => {
-                streamingConnection.start()
-            })
+            url = requestOptions.url
+            initDict = { headers: requestOptions.headers }
         })
-        return streamingConnection
+
+        return new EventSource(url, initDict)
     }
 }
 
