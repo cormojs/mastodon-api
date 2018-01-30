@@ -1,7 +1,7 @@
 import assert from 'assert'
 import util from 'util'
 import { OAuth2 } from 'oauth'
-import Request from 'request'
+import * as Req from 'request'
 
 import Helpers from './helpers'
 import StreamingAPIConnection from './streaming-api-connection'
@@ -11,12 +11,15 @@ import {
     DEFAULT_REST_ROOT,
     DEFAULT_REST_BASE,
     REQUIRED_KEYS_FOR_AUTH,
-    DEFAULT_OAUTH_APPS_ENDPOINT
+    DEFAULT_OAUTH_APPS_ENDPOINT,
 } from './settings'
 
 class Mastodon {
 
     constructor(config) {
+        const Request = config.proxy ? Req.request.defaults({ proxy:  config.proxy })
+                                     : Req.Request
+        
         this.apiUrl = config.api_url || DEFAULT_REST_ROOT
 
         Mastodon._validateConfigOrThrow(config)
