@@ -10,7 +10,6 @@ module.exports = {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: [".js", ".json"]
     },
-    files: "./lib/bundle.js",
   
     module: {
       rules: [
