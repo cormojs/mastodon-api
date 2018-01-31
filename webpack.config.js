@@ -2,7 +2,7 @@ module.exports = {
     entry: "./src/mastodon.js",
     output: {
       filename: "bundle.js",
-      path: __dirname + "/lib"
+      path: __dirname
     },
   
     resolve: {
