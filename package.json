@@ -2,7 +2,7 @@
   "name": "mastodon-api",
   "version": "1.3.2",
   "description": "Mastodon API library with streaming support",
-  "main": "./src/mastodon.js",
+  "main": "./lib/mastodon.js",
   "scripts": {
     "start": "webpack"
   },
